@@ -3,11 +3,9 @@ td {
 }
 
 .app {
-  border: 1px solid lightgray;
   height: 500px;
   max-width: 900px !important;
   overflow: auto;
-  margin: auto;
 }
 
 h1.title {
