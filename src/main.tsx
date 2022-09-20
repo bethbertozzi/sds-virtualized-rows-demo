@@ -1,9 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+
+import {
+  Table,
+  TableRow,
+  CellHeaderDirection,
+  CellHeader,
+  defaultTheme,
+  TableHeader,
+} from "czifui";
+
+import { StyledTableHeader } from "./style";
 
 import "./index.css";
-
-import { TableRow, CellBasic, CellHeaderDirection, CellHeader } from "czifui";
 
 import {
   ColumnDef,
@@ -12,7 +23,7 @@ import {
   getSortedRowModel,
   Row,
   SortingState,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table";
 import { makeData, Person } from "./makeData";
 import { useVirtual } from "react-virtual";
@@ -27,42 +38,42 @@ function App() {
       {
         accessorKey: "id",
         header: "ID",
-        size: 60
+        size: 60,
       },
       {
         accessorKey: "firstName",
-        cell: (info) => info.getValue()
+        cell: (info) => info.getValue(),
       },
       {
         accessorFn: (row) => row.lastName,
         id: "lastName",
         cell: (info) => info.getValue(),
-        header: () => <span>Last Name</span>
+        header: () => <span>Last Name</span>,
       },
       {
         accessorKey: "age",
         header: () => "Age",
-        size: 50
+        size: 50,
       },
       {
         accessorKey: "visits",
         header: () => <span>Visits</span>,
-        size: 50
+        size: 50,
       },
       {
         accessorKey: "status",
-        header: "Status"
+        header: "Status",
       },
       {
         accessorKey: "progress",
         header: "Profile Progress",
-        size: 80
+        size: 80,
       },
       {
         accessorKey: "createdAt",
         header: "Created At",
-        cell: (info) => info.getValue<Date>().toLocaleString()
-      }
+        cell: (info) => info.getValue<Date>().toLocaleString(),
+      },
     ],
     []
   );
@@ -74,12 +85,12 @@ function App() {
     data,
     columns,
     state: {
-      sorting
+      sorting,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true
+    debugTable: true,
   });
 
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
@@ -88,7 +99,7 @@ function App() {
   const rowVirtualizer = useVirtual({
     parentRef: tableContainerRef,
     size: rows.length,
-    overscan: 10
+    overscan: 10,
   });
   const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
 
@@ -100,10 +111,11 @@ function App() {
 
   return (
     <div className="p-2">
-      <div className="h-2" />
-      <div ref={tableContainerRef} className="container">
-        <table>
-          <thead>
+      <h1 className="title">Table with virtualized rows</h1>
+      <p className="description"></p>
+      <div ref={tableContainerRef} className="app">
+        <Table>
+          <StyledTableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -133,37 +145,35 @@ function App() {
                 })}
               </TableRow>
             ))}
-          </thead>
-          <tbody>
-            {paddingTop > 0 && (
-              <tr>
-                <td style={{ height: `${paddingTop}px` }} />
-              </tr>
-            )}
-            {virtualRows.map((virtualRow) => {
-              const row = rows[virtualRow.index] as Row<Person>;
-              return (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-            {paddingBottom > 0 && (
-              <tr>
-                <td style={{ height: `${paddingBottom}px` }} />
-              </tr>
-            )}
-          </tbody>
-        </table>
+          </StyledTableHeader>
+          {paddingTop > 0 && (
+            <tr>
+              <td style={{ height: `${paddingTop}px` }} />
+            </tr>
+          )}
+          {virtualRows.map((virtualRow) => {
+            const row = rows[virtualRow.index] as Row<Person>;
+            return (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+          {paddingBottom > 0 && (
+            <tr>
+              <td style={{ height: `${paddingBottom}px` }} />
+            </tr>
+          )}
+        </Table>
       </div>
       <div>{table.getRowModel().rows.length} Rows</div>
       <div>
@@ -182,6 +192,12 @@ if (!rootElement) throw new Error("Failed to find the root element");
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <App />
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={defaultTheme}>
+        <EmotionThemeProvider theme={defaultTheme}>
+          <App />
+        </EmotionThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </React.StrictMode>
 );
