@@ -1,15 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
-import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
-
 import {
   Table,
   TableRow,
   CellHeaderDirection,
   CellHeader,
-  defaultTheme,
-  TableHeader,
+  CellBasic,
 } from "czifui";
 
 import { StyledTableHeader } from "./style";
@@ -147,9 +142,9 @@ function App() {
             ))}
           </StyledTableHeader>
           {paddingTop > 0 && (
-            <tr>
+            <TableRow>
               <td style={{ height: `${paddingTop}px` }} />
-            </tr>
+            </TableRow>
           )}
           {virtualRows.map((virtualRow) => {
             const row = rows[virtualRow.index] as Row<Person>;
@@ -157,21 +152,29 @@ function App() {
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <td key={cell.id}>
-                      {flexRender(
+                    <CellBasic
+                      key={cell.id}
+                      primaryText={
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        ) as string
+                      }
+                    >
+                      {/* {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
-                      )}
-                    </td>
+                      )} */}
+                    </CellBasic>
                   );
                 })}
               </TableRow>
             );
           })}
           {paddingBottom > 0 && (
-            <tr>
+            <TableRow>
               <td style={{ height: `${paddingBottom}px` }} />
-            </tr>
+            </TableRow>
           )}
         </Table>
       </div>
@@ -186,18 +189,4 @@ function App() {
   );
 }
 
-const rootElement = document.getElementById("root");
-
-if (!rootElement) throw new Error("Failed to find the root element");
-
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={defaultTheme}>
-        <EmotionThemeProvider theme={defaultTheme}>
-          <App />
-        </EmotionThemeProvider>
-      </ThemeProvider>
-    </StyledEngineProvider>
-  </React.StrictMode>
-);
+export default App;
