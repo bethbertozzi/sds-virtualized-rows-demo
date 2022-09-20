@@ -160,6 +160,12 @@ function App() {
                           cell.getContext()
                         ) as string
                       }
+                      tooltipProps={{
+                        sdsStyle: "dark",
+                        leaveTouchDelay: 0,
+                        leaveDelay: 0,
+                        subtitle: `${cell.getValue()} ± 5%`,
+                      }}
                     >
                       {/* {flexRender(
                         cell.column.columnDef.cell,
