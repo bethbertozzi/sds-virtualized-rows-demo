@@ -107,7 +107,6 @@ function App() {
   return (
     <div className="p-2">
       <h1 className="title">Table with virtualized rows</h1>
-      <p className="description"></p>
       <div ref={tableContainerRef} className="app">
         <Table>
           <StyledTableHeader>
